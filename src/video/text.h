@@ -4,6 +4,8 @@
 #include <stdint.h>
 
 #define VMEM ((uint16_t *) 0xb8000)
+#define WIDTH (80)
+#define HEIGHT (25)
 
 #define TERM_WIDTH 80
 #define TERM_HEIGHT 25
@@ -31,6 +33,9 @@ void init_terminal();
 void clear_screen();
 void set_color(enum color_e foreground, enum color_e background);
 void putchar(char c);
-void print(char *string);
+void print(const char *string);
+void putn(unsigned int n, int base);
+void putsn(int n, int base);
+void printf(const char *fmt, ...);
 
 #endif

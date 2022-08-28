@@ -12,7 +12,6 @@ void init_gdt() {
     set_entry(4, 0, 0xfffff, GDT_PRESENT | GDT_RING3 | GDT_DATA_SEGMENT | GDT_DATA_WRITABLE, GDT_PROTECTED_MODE | GDT_GRANULARITY_4K);
 
     set_gdt(gdt, sizeof(struct gdt_entry_s) * GDT_SIZE - 1);
-    reload_segments();
 }
 
 void set_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags) {

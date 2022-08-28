@@ -34,6 +34,5 @@ void init_gdt();
 
 void set_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags);
 void set_gdt(void *base, uint16_t limit);
-void reload_segments();
 
 #endif
