@@ -29,6 +29,8 @@ enum color_e {
     WHITE
 };
 
+extern void disable_cursor();
+
 void init_terminal();
 void clear_screen();
 void set_color(enum color_e foreground, enum color_e background);

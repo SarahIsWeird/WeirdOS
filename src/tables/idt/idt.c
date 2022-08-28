@@ -2,6 +2,7 @@
 
 #include "../../video/text.h"
 #include "../../drivers/keyboard/kb.h"
+#include "../../multitasking/scheduler.h"
 
 const char *exception_names[] = {
     "Divide-by-zero",
@@ -42,7 +43,7 @@ static inline void outb(uint16_t port, uint8_t data) {
     asm volatile("outb %0, %1" : : "a" (data), "Nd" (port));
 }
 
-void common_interrupt_handler(int interrupt_number, struct registers_s registers, int error_code) {
+struct registers_s *common_interrupt_handler(int interrupt_number, struct registers_s *registers) {
     if (interrupt_number < 0x20) {
         printf("Exception 0x%d (%s), halting kernel.\n", interrupt_number, exception_names[interrupt_number]);
 
@@ -50,12 +51,13 @@ void common_interrupt_handler(int interrupt_number, struct registers_s registers
             asm volatile("cli; hlt");
         }
     }
-    
-    printf("Interrupt 0x%x\n", interrupt_number);
+
+    // if (interrupt_number == 0x20) {
+    //    return schedule_task(registers);
+    // }
 
     if (interrupt_number == 0x21) {
         on_keyboard_irq();
-        print("Key pressed\n");
     }
 
     if (interrupt_number >= 0x20 && interrupt_number <= 0x2f) {
@@ -65,6 +67,8 @@ void common_interrupt_handler(int interrupt_number, struct registers_s registers
 
         outb(0x20, 0x20);
     }
+
+    return registers;
 }
 
 void set_idt_entry(struct idt_entry_s *idt, int index, uint32_t offset, uint16_t selector, int gate_type, int ring) {

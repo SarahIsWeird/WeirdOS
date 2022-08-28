@@ -39,7 +39,10 @@ void init_terminal() {
     terminal_info.row = 0;
     terminal_info.column = 0;
 
-    set_color(WHITE, BLACK);
+    set_color(WHITE, CYAN);
+    clear_screen();
+
+    disable_cursor();
 }
 
 void set_color(enum color_e foreground, enum color_e background) {

@@ -8,7 +8,7 @@ interrupt_handler_%1:
 	pushad
 	push %1
 	call common_interrupt_handler
-	add esp, 4
+	mov esp, eax
 	popad
 	add esp, 4
 	iret
@@ -21,7 +21,7 @@ interrupt_handler_%1:
 	pushad
 	push %1
 	call common_interrupt_handler
-	add esp, 4
+	mov esp, eax
 	popad
 	add esp, 4
 	iret
@@ -34,7 +34,7 @@ interrupt_handler_%1:
 	pushad
 	push %1
 	call common_interrupt_handler
-	add esp, 4
+	mov esp, eax
 	popad
 	add esp, 4
 	iret

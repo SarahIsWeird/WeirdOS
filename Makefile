@@ -54,7 +54,7 @@ iso: kernel
 	grub-mkrescue -o weirdos.iso iso/
 
 run: iso
-	qemu-system-i386.exe -cdrom weirdos.iso
+	qemu-system-i386 -cdrom weirdos.iso
 
 kernel_debug: $(COBJ_D) $(AOBJ_D)
 	$(LD) $(LDFLAGS_D) -o weirdos.bin $(COBJ_D) $(AOBJ_D)
@@ -67,7 +67,7 @@ kernel_debug: $(COBJ_D) $(AOBJ_D)
 
 debugrun: kernel_debug
 # -d cpu,int -s -S
-	qemu-system-i386.exe -no-reboot -no-shutdown -kernel weirdos.bin -s -S
+	qemu-system-i386 -no-reboot -no-shutdown -kernel weirdos.bin -s -S -d cpu
 
 clean:
 	rm -rf build/ iso/ weirdos.bin weirdos.iso 2> /dev/null

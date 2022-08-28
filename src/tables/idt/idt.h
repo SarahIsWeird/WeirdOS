@@ -19,13 +19,21 @@ struct registers_s {
         uint32_t ecx;
         uint32_t edx;
         uint32_t ebx;
-        uint32_t esp;
+        uint32_t esp2;
         uint32_t ebp;
         uint32_t esi;
         uint32_t edi;
+
+        int error_code;
+
+        uint32_t eip;
+        uint32_t cs;
+        uint32_t eflags;
+        uint32_t esp;
+        uint32_t ss;
 } __attribute__((__packed__));
 
-void common_interrupt_handler(int interrupt_number, struct registers_s registers, int error_code);
+struct registers_s *common_interrupt_handler(int interrupt_number, struct registers_s *registers);
 
 void set_idt_entry(struct idt_entry_s *idt, int index, uint32_t offset, uint16_t selector, int gate_type, int ring);
 
