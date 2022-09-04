@@ -20,3 +20,13 @@ set_gdt:
 	mov gs, ax
 	mov ss, ax
 	ret
+
+global set_tr
+set_tr:
+	mov eax, [esp + 4]
+	ltr ax
+	ret
+
+global reload_segments
+reload_segments:
+	ret

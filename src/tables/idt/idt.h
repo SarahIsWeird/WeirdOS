@@ -19,7 +19,6 @@ struct registers_s {
         uint32_t ecx;
         uint32_t edx;
         uint32_t ebx;
-        uint32_t esp2;
         uint32_t ebp;
         uint32_t esi;
         uint32_t edi;
@@ -38,5 +37,6 @@ struct registers_s *common_interrupt_handler(int interrupt_number, struct regist
 void set_idt_entry(struct idt_entry_s *idt, int index, uint32_t offset, uint16_t selector, int gate_type, int ring);
 
 extern void init_idt();
+extern void acknowledge_irq(int interrupt_number);
 
 #endif

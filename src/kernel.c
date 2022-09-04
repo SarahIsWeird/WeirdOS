@@ -16,18 +16,20 @@ void kernel_main() {
 	print("Initializing keyboard driver...\n");
 	init_keyboard_driver();
 
-    // print("Initializing scheduler...\n");
-    // init_multitasking();
+    print("Initializing scheduler...\n");
+    init_multitasking();
 
+    print("Enabling interrupts...\n");
 	asm volatile("sti");
 
     while (1) {
+        for (volatile int i = 0; i < 10000; i++);
         putchar('c');
     }
 
-    while (1) {
-        putchar(getchar());
-    }
+    // while (1) {
+    //     putchar(getchar());
+    // }
 
     while (1);
 }

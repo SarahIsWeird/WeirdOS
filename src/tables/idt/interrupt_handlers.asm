@@ -2,15 +2,50 @@ section .text
 
 extern common_interrupt_handler
 
+%macro push_regs 0
+	push edi
+	push esi
+	push ebp
+	push ebx
+	push edx
+	push ecx
+	push eax
+%endmacro
+
+%macro pop_regs 0
+	pop eax
+	pop ecx
+	pop edx
+	pop ebx
+	pop ebp
+	pop esi
+	pop edi
+	add esp, 4
+%endmacro
+
+%macro prepare_handler_call 0
+	mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+%endmacro
+
+%macro clean_up_handler_call 0
+	mov esp, eax
+	mov ax, 0x23
+	mov ds, ax
+	mov es, ax
+%endmacro
+
 %macro exception_handler_with_code 1
 global interrupt_handler_%1
 interrupt_handler_%1:
-	pushad
+	push_regs
+	push esp
 	push %1
+	prepare_handler_call
 	call common_interrupt_handler
-	mov esp, eax
-	popad
-	add esp, 4
+	clean_up_handler_call
+	pop_regs
 	iret
 %endmacro
 
@@ -18,12 +53,13 @@ interrupt_handler_%1:
 extern interrupt_handler_%1
 interrupt_handler_%1:
 	push 0
-	pushad
+	push_regs
+	push esp
 	push %1
+	prepare_handler_call
 	call common_interrupt_handler
-	mov esp, eax
-	popad
-	add esp, 4
+	clean_up_handler_call
+	pop_regs
 	iret
 %endmacro
 
@@ -31,12 +67,13 @@ interrupt_handler_%1:
 extern interrupt_handler_%1
 interrupt_handler_%1:
 	push 0
-	pushad
+	push_regs
+	push esp
 	push %1
+	prepare_handler_call
 	call common_interrupt_handler
-	mov esp, eax
-	popad
-	add esp, 4
+	clean_up_handler_call
+	pop_regs
 	iret
 %endmacro
 

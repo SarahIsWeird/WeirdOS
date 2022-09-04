@@ -1,0 +1,15 @@
+{
+    "code-runner.customCommand": ". ~/.profile; make run -j12",
+    "code-runner.ignoreSelection": true,
+    "code-runner.preserveFocus": false,
+    "code-runner.runInTerminal": true,
+    "code-runner.cwd": "~/weirdos",
+    "editor.tabSize": 8,
+    "clangd.arguments": [
+        "-Wno-void-pointer-to-int-cast"
+    ],
+    "C_Cpp.codeAnalysis.clangTidy.args": [
+        "-Wno-void-pointer-to-int-cast"
+    ],
+    "C_Cpp.codeAnalysis.clangTidy.enabled": false
+}

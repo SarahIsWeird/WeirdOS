@@ -3,6 +3,7 @@
 #include "../../video/text.h"
 #include "../../drivers/keyboard/kb.h"
 #include "../../multitasking/scheduler.h"
+#include "../gdt/gdt.h"
 
 const char *exception_names[] = {
     "Divide-by-zero",
@@ -43,23 +44,7 @@ static inline void outb(uint16_t port, uint8_t data) {
     asm volatile("outb %0, %1" : : "a" (data), "Nd" (port));
 }
 
-struct registers_s *common_interrupt_handler(int interrupt_number, struct registers_s *registers) {
-    if (interrupt_number < 0x20) {
-        printf("Exception 0x%d (%s), halting kernel.\n", interrupt_number, exception_names[interrupt_number]);
-
-        while (1) {
-            asm volatile("cli; hlt");
-        }
-    }
-
-    // if (interrupt_number == 0x20) {
-    //    return schedule_task(registers);
-    // }
-
-    if (interrupt_number == 0x21) {
-        on_keyboard_irq();
-    }
-
+static void ack_irq(int interrupt_number) {
     if (interrupt_number >= 0x20 && interrupt_number <= 0x2f) {
         if (interrupt_number >= 0x28) {
             outb(0xa0, 0x20);
@@ -67,8 +52,58 @@ struct registers_s *common_interrupt_handler(int interrupt_number, struct regist
 
         outb(0x20, 0x20);
     }
+}
 
-    return registers;
+struct registers_s *common_interrupt_handler(int interrupt_number, struct registers_s *registers) {
+    struct registers_s *new_registers = registers;
+
+    if (interrupt_number < 0x20) {
+        printf("Exception 0x%x (%s), halting kernel.\n", interrupt_number, exception_names[interrupt_number]);
+
+        switch (interrupt_number) {
+            case 0x6: // Invalid opcode
+                printf("Invalid opcode at address 0x%x\n", registers->error_code);
+                break;
+            case 0xd: // GPF
+                printf("The error code is %d. ", registers->error_code);
+                
+                if (registers->error_code & 1) {
+                    print("The GPF origininated externally ");
+                } else {
+                    print("The GPF did not originate externally ");
+                }
+
+                printf("and the error code references descriptor %d in the %d", registers->error_code >> 3, (registers->error_code >> 1) & 3);
+
+                if ((registers->error_code & 7) == 0) {
+                    print("GDT.\n");
+                } else if ((registers->error_code & 7) == 2) {
+                    print("LDT.\n");
+                } else {
+                    print("IDT.\n");
+                }
+
+                break;
+        }
+
+        while (1) {
+            asm volatile("cli; hlt");
+        }
+    }
+
+    if (interrupt_number == 0x20) {
+        new_registers = schedule_task(registers);
+        get_tss()[1] = (uint32_t) (new_registers + 1);
+        // registers = new_registers;
+    }
+
+    if (interrupt_number == 0x21) {
+        on_keyboard_irq();
+    }
+
+    ack_irq(interrupt_number);
+
+    return new_registers;
 }
 
 void set_idt_entry(struct idt_entry_s *idt, int index, uint32_t offset, uint16_t selector, int gate_type, int ring) {

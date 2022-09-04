@@ -2,7 +2,7 @@ CC=i686-elf-gcc
 AS=nasm
 LD=i686-elf-gcc
 
-CFLAGS=-c -ffreestanding -Wall -Wextra -O2 -Isrc/lib
+CFLAGS=-c -ffreestanding -fno-stack-protector -Wall -Wextra -Wno-void-pointer-to-int-cast -O2 -Isrc/lib
 ASFLAGS=-felf32
 LDFLAGS=-T linker.ld -ffreestanding -nostdlib -lgcc -O2
 
@@ -65,9 +65,12 @@ kernel_debug: $(COBJ_D) $(AOBJ_D)
 		false; \
 	fi
 
+nooptrun: kernel_debug
+	qemu-system-i386 -no-reboot -no-shutdown -kernel weirdos.bin
+
 debugrun: kernel_debug
 # -d cpu,int -s -S
-	qemu-system-i386 -no-reboot -no-shutdown -kernel weirdos.bin -s -S -d cpu
+	qemu-system-i386 -no-reboot -no-shutdown -kernel weirdos.bin -d cpu,int -s -S
 
 clean:
 	rm -rf build/ iso/ weirdos.bin weirdos.iso 2> /dev/null

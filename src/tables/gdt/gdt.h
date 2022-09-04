@@ -10,7 +10,7 @@ enum gdt_access_e {
     GDT_DATA_DIRECTION = 4,
     GDT_CODE_SEGMENT = 24,
     GDT_DATA_SEGMENT = 16,
-    GDT_TSS_SEGMENT = 0,
+    GDT_TSS_SEGMENT = 0x09,
     GDT_RING0 = 0,
     GDT_RING3 = 96,
     GDT_PRESENT = 128
@@ -32,7 +32,11 @@ struct gdt_entry_s {
 
 void init_gdt();
 
+uint32_t *get_tss();
+
 void set_entry(int index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags);
 void set_gdt(void *base, uint16_t limit);
+void set_tr(int index);
+void reload_segments();
 
 #endif
