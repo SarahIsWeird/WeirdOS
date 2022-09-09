@@ -16,7 +16,7 @@ void init_gdt() {
     set_entry(2, 0, 0xfffff, GDT_PRESENT | GDT_RING0 | GDT_DATA_SEGMENT | GDT_DATA_WRITABLE, GDT_PROTECTED_MODE | GDT_GRANULARITY_4K);
     set_entry(3, 0, 0xfffff, GDT_PRESENT | GDT_RING3 | GDT_CODE_SEGMENT | GDT_CODE_CONFORMING | GDT_CODE_READABLE, GDT_PROTECTED_MODE | GDT_GRANULARITY_4K);
     set_entry(4, 0, 0xfffff, GDT_PRESENT | GDT_RING3 | GDT_DATA_SEGMENT | GDT_DATA_WRITABLE, GDT_PROTECTED_MODE | GDT_GRANULARITY_4K);
-    set_entry(5, (uint32_t) tss, sizeof(tss), 0x89 | 0x40 | GDT_RING3, 0x0);
+    set_entry(5, (uint32_t) tss, sizeof(tss), GDT_PRESENT | GDT_RING0 | 0x09, 0);
 
     set_gdt(gdt, sizeof(struct gdt_entry_s) * GDT_SIZE - 1);
     set_tr(0x28);

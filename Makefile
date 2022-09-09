@@ -2,11 +2,11 @@ CC=i686-elf-gcc
 AS=nasm
 LD=i686-elf-gcc
 
-CFLAGS=-c -ffreestanding -fno-stack-protector -Wall -Wextra -Wno-void-pointer-to-int-cast -O2 -Isrc/lib
+CFLAGS=-c -ffreestanding -fno-stack-protector -Wall -Wextra -Wno-void-pointer-to-int-cast -O2
 ASFLAGS=-felf32
 LDFLAGS=-T linker.ld -ffreestanding -nostdlib -lgcc -O2
 
-CFLAGS_D=-c -ffreestanding -Wall -Wextra -O0 -g -Isrc/lib
+CFLAGS_D=-c -ffreestanding -Wall -Wextra -O0 -g
 ASFLAGS_D=-felf32 -g
 LDFLAGS_D=-T linker.ld -ffreestanding -nostdlib -lgcc -O0 -g
 

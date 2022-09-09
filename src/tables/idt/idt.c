@@ -44,16 +44,6 @@ static inline void outb(uint16_t port, uint8_t data) {
     asm volatile("outb %0, %1" : : "a" (data), "Nd" (port));
 }
 
-static void ack_irq(int interrupt_number) {
-    if (interrupt_number >= 0x20 && interrupt_number <= 0x2f) {
-        if (interrupt_number >= 0x28) {
-            outb(0xa0, 0x20);
-        }
-
-        outb(0x20, 0x20);
-    }
-}
-
 struct registers_s *common_interrupt_handler(int interrupt_number, struct registers_s *registers) {
     struct registers_s *new_registers = registers;
 
@@ -101,7 +91,7 @@ struct registers_s *common_interrupt_handler(int interrupt_number, struct regist
         on_keyboard_irq();
     }
 
-    ack_irq(interrupt_number);
+    acknowledge_irq(interrupt_number);
 
     return new_registers;
 }

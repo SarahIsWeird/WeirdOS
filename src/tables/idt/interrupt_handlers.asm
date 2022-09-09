@@ -115,3 +115,17 @@ exception_handler_without_code	31 ; Reserved
 interrupt_handler i
 %assign i i+1
 %endrep
+
+global acknowledge_irq
+acknowledge_irq:
+	mov edx, dword [esp + 4]
+	cmp edx, 0x20
+	jl .done
+	cmp edx, 0x2f
+	jg .done
+	mov al, 0x20
+	cmp edx, 0x28
+	jl .mpic
+	out 0xa0, al
+.mpic:	out 0x20, al
+.done:	ret

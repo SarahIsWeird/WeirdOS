@@ -1,7 +1,7 @@
 #include "text.h"
 
 #include <stdarg.h>
-#include <string.h>
+#include "../lib/string.h"
 
 struct {
     int row;

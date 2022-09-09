@@ -71,17 +71,3 @@ remap_pic:
 	out 0xa1, al
 
 	ret
-
-global acknowledge_irq
-acknowledge_irq:
-	pop edx
-	cmp edx, 0x20
-	jl .done
-	cmp edx, 0x2f
-	jg .done
-	mov al, 0x20
-	out 0x20, al
-	cmp edx, 0x28
-	jl .done
-	out 0xa0, al
-.done:	ret
